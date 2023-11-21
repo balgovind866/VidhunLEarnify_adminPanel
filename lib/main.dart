@@ -6,8 +6,12 @@ import 'package:student_admin_panel/routes.dart';
 
 import 'constant/app_themes.dart';
 import 'constant/route_constants.dart';
+
+import 'features/represantion/cubit/cubit/auth_cubit.dart';
+import 'features/represantion/cubit/cubit/credencial/credencial_cubit.dart';
 import 'features/represantion/dashboard_screan.dart';
 import 'core/injector/injector_config.dart' as di;
+import 'features/represantion/subject/subject_bloc/subject_cubit.dart';
 import 'features/represantion/teacher/bloc/teacher_cubit.dart';
 
 
@@ -32,6 +36,15 @@ Future<void> main() async {
             create: (context) => di.sl<TeacherCubit>()),
         BlocProvider<StudentBlocCubit>(
             create: (context) => di.sl<StudentBlocCubit>()),
+
+        BlocProvider<AuthCubit>(
+          create: (_) => di.sl<AuthCubit>()..appStarted(),
+        ),
+        BlocProvider<CredentialCubit>(
+          create: (_) => di.sl<CredentialCubit>(),
+
+        ),
+        BlocProvider<SubjectCubit>(create: (_)=>di.sl<SubjectCubit>()),
       ],
       child: const MyApp(),
     ),

@@ -39,7 +39,7 @@ dependencies:
   firebase_core: ^2.15.0
   equatable: ^2.0.5
   firebase_storage: ^11.2.8
-  cloud_firestore: ^4.8.5
+  cloud_firestore: ^4.9.1
   side_sheet: ^1.0.4
   image_picker: ^1.0.0
   fluttertoast: ^8.2.2
@@ -47,6 +47,8 @@ dependencies:
   get_it: ^7.6.0
   table_calendar: ^3.0.9
   image_network: ^2.5.4+1
+  firebase_auth: ^4.8.0
+  flutter_svg: ^2.0.7
 
 dev_dependencies:
   flutter_test:

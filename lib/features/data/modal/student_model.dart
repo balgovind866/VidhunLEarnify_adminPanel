@@ -8,12 +8,13 @@ class StudentModel extends StudentEntity {
   final String? password ;
   final String? fullName;
   final int? age;
+  final String? uid;
   final  String? email;
   final String? profileImageUrl;
   final String? rollNumber;
   final String? course;
 
-  StudentModel({this.additionalProperty2, this.profileImageUrl, this.rollNumber, this.course, this.additionalProperty1, this.password, this.fullName, this.age, this.email,
+  StudentModel( {this.additionalProperty2, this.profileImageUrl, this.rollNumber, this.course, this.additionalProperty1, this.password, this.fullName, this.age, this.email,this.uid,
 
 
 
@@ -21,6 +22,8 @@ class StudentModel extends StudentEntity {
     password: password,
     fullName: fullName,
     age: age,
+    uid: uid,
+
     email: email,
     profileImageUrl: profileImageUrl,
     rollNumber: rollNumber,
@@ -30,13 +33,14 @@ class StudentModel extends StudentEntity {
   factory StudentModel.fromSnapshot(DocumentSnapshot snap) {
     var snapshot = snap.data() as Map<String, dynamic>;
     return StudentModel(
-        password: snapshot['password'],
+      password: snapshot['password'],
       fullName: snapshot['fullName'],
       age: snapshot['age'],
       email: snapshot['email'],
       profileImageUrl: snapshot['profileImageUrl'],
       rollNumber: snapshot['rollNumber'],
       course: snapshot['course'],
+      uid: snapshot['uid'],
       additionalProperty1: snapshot['additionalProperty1'],
       additionalProperty2: snapshot['additionalProperty2'],
     );
@@ -44,6 +48,7 @@ class StudentModel extends StudentEntity {
 
   Map<String, dynamic> toJson() {
     return {
+      'uid':uid,
       'password': password,
       'fullName': fullName,
       'age': age,

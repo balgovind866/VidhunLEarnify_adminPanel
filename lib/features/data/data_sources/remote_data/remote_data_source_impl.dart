@@ -3,9 +3,12 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:student_admin_panel/features/data/data_sources/remote_data/remote_data_sources.dart';
+import 'package:student_admin_panel/features/data/modal/subject_model.dart';
 import 'package:student_admin_panel/features/domain/entity/student_entites.dart';
+import 'package:student_admin_panel/features/domain/entity/subject_entites.dart';
 import 'package:student_admin_panel/features/domain/entity/teacher_entities.dart';
 
 import '../../modal/student_model.dart';
@@ -93,26 +96,66 @@ class RemoteDataSourceImpl extends RemoteDataSource {
 
 class StudentRemoteDataSourceImpl extends StudentRemoteDateSource {
 
+
   final FirebaseFirestore firebaseFirestore;
   final FirebaseStorage firebaseStorage;
+  final FirebaseAuth auth;
 
-  StudentRemoteDataSourceImpl({required this.firebaseFirestore, required this.firebaseStorage});
+  StudentRemoteDataSourceImpl( { required this.auth,required this.firebaseFirestore, required this.firebaseStorage});
   @override
   Future<void> createStudent(StudentEntity student) async {
     final userCollection = firebaseFirestore.collection("StudentProfile");
+    final uid=await getCurrentUId();
+    userCollection.doc(uid).get().then((userDoc) {
 
-    final addStudentProfile = StudentModel(
-      password: student.password,
-      fullName: student.fullName,
-      age:student.age,
-      email: student.email,
-      profileImageUrl: student.profileImageUrl,
-      rollNumber: student.rollNumber,
-      course: student.course,
-    ).toJson();
-    // TODO: implement createStudent
-    userCollection.add(addStudentProfile);
+
+      final addStudentProfile = StudentModel(
+        password: student.password,
+        fullName: student.fullName,
+        uid: uid,
+        age:student.age,
+        email: student.email,
+        profileImageUrl: student.profileImageUrl,
+        rollNumber: student.rollNumber,
+        course: student.course,
+      ).toJson();
+      if(!userDoc.exists){
+        userCollection.doc(uid).set(addStudentProfile);
+      }else{
+        userCollection.doc(uid).update(addStudentProfile);
+        print("user already exist");
+        return;
+      }
+      // TODO: implement createStudent
+
+
+    }).catchError((error) {
+      print(error);
+    });
+
   }
+
+
+  //for Subject
+  @override
+  Future<void> createSubject(SubjectEntities Subject) async{
+    final useCollection=firebaseFirestore.collection('Subject');
+
+      final addSudject=SubjectModel(
+        subjectName: Subject.subjectName,
+        subjectCode: Subject.subjectCode,
+        branch:Subject.branch,
+        startTime:Subject.startTime,
+        endTime:Subject.endTime,
+        daysSelected:Subject.daysSelected,
+
+      ).toJson();
+      useCollection.add(addSudject);
+  }
+
+
+  @override
+  Future<String> getCurrentUId() async => auth.currentUser!.uid;
 
   @override
   Stream<List<StudentEntity>> getSingleOtherStudent(String otherUid) {
@@ -128,8 +171,8 @@ class StudentRemoteDataSourceImpl extends StudentRemoteDateSource {
 
   @override
   Stream<List<StudentEntity>> getStudents() {
-    // TODO: implement getStudents
-    throw UnimplementedError();
+    final teacherCollection = firebaseFirestore.collection("StudentProfile");
+    return teacherCollection.snapshots().map((event) => event.docs.map((e) =>StudentModel.fromSnapshot(e)).toList());
   }
 
   @override
@@ -143,5 +186,45 @@ class StudentRemoteDataSourceImpl extends StudentRemoteDateSource {
     // TODO: implement uploadImageToStorage
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> forgotPassword(String email) async{
+    auth.sendPasswordResetEmail(email: email);
+  }
+
+  @override
+  Future<bool> isSignIn() async=> auth.currentUser?.uid!=null;
+
+  @override
+  Future<void> signIn(StudentEntity student) async {
+    await auth.signInWithEmailAndPassword(
+        email: student.email.toString(), password: student.password.toString());
+
+  }
+
+  @override
+  Future<void> signOut() async {
+    await auth.signOut();
+
+  }
+
+  @override
+  Future<void> signUp(StudentEntity student) async {
+    await auth.createUserWithEmailAndPassword(email: student.email.toString(), password: student.password.toString());
+  }
+
+  @override
+  Stream<List<SubjectEntities>> getSubject() {
+    final SubjectCollection = firebaseFirestore.collection("Subject");
+    return SubjectCollection.snapshots().map((event) => event.docs.map((e) => SubjectModel.fromSnapshot(e )).toList());
+
+
+    // TODO: implement SubjecGet
+    throw UnimplementedError();
+  }
+
+
+
+
 
 }

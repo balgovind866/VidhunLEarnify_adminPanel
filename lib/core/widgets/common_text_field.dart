@@ -32,31 +32,37 @@ class CommonTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      child: TextFormField(
-        inputFormatters: keyboardType == TextInputType.phone ? [
-          FilteringTextInputFormatter.digitsOnly,
-          LengthLimitingTextInputFormatter(10),
-        ] : [],
-        autofocus: autofocus,
-        minLines: isMulti ? 4 : 1,
-        maxLines: isMulti ? null : 1,
-        enabled: enabled,
-        readOnly: readOnly,
-        obscureText: obsecure,
-        keyboardType: keyboardType,
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          contentPadding:
-          const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-          border: const OutlineInputBorder(),
-          focusedBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.primary),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        child: TextFormField(
+          inputFormatters: keyboardType == TextInputType.phone ? [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(10),
+          ] : [],
+          autofocus: autofocus,
+          minLines: isMulti ? 4 : 1,
+          maxLines: isMulti ? null : 1,
+          enabled: enabled,
+          readOnly: readOnly,
+          obscureText: obsecure,
+          keyboardType: keyboardType,
+          controller: controller,
+          decoration: InputDecoration(
+
+
+            labelText: label,
+            contentPadding:
+            const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+            border: const OutlineInputBorder(),
+            focusedBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.green),
+            ),
           ),
+          validator: validator,
         ),
-        validator: validator,
       ),
     );
   }

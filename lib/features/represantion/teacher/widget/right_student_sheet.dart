@@ -5,17 +5,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:student_admin_panel/features/data/modal/student_model.dart';
-import 'package:student_admin_panel/features/represantion/teacher/widget/select_blood_group.dart';
 import 'package:student_admin_panel/features/represantion/teacher/widget/select_gender.dart';
+
+
 
 import '../../../../constant/app_colors.dart';
 import '../../../../constant/app_sized_box.dart';
 import '../../../../constant/app_text.dart';
 import '../../../../constant/app_text_style.dart';
 import '../../../../core/widgets/common_text_field.dart';
-import '../../../data/modal/teacher_model.dart';
-import '../../student/blocStudent/student_bloc_cubit.dart';
+import '../../cubit/cubit/credencial/credencial_cubit.dart';
 import '../bloc/teacher_cubit.dart';
+
 
 
 typedef GenderCallback = void Function(String? gender);
@@ -53,6 +54,7 @@ class _RightStudentSheetState extends State<RightStudentSheet> {
   String? selectedGender;
   String? bloodGroup;
 
+  bool loading =false;
   Future<void> selectImage() async {
     try {
       final pickedFile =
@@ -72,6 +74,7 @@ class _RightStudentSheetState extends State<RightStudentSheet> {
   @override
   void initState() {
     super.initState();
+    loading=false;
 
     _fullnameController = TextEditingController();
     _emailController = TextEditingController();
@@ -264,7 +267,7 @@ class _RightStudentSheetState extends State<RightStudentSheet> {
                       onPressed: () {
                         _createStudentProfile(context);
                       },
-                      child: const Text(AppText.saveButton),
+                      child: Text(AppText.saveButton),
                     ),
                   ),
                 ],
@@ -277,39 +280,59 @@ class _RightStudentSheetState extends State<RightStudentSheet> {
   }
 
   void _uploadImage(context, Uint8List? image) {
-    if (_formKey.currentState!.validate() && image != null)
+
+
+    if (_formKey.currentState!.validate() )
+
     {
+
+
 
       _formKey.currentState!.save();
 
-      BlocProvider.of<TeacherCubit>(context).uploadTeacherImageUseCase(image, "image").then((url)
+      BlocProvider.of<TeacherCubit>(context).uploadTeacherImageUseCase(image!, "image").then((url)
       {
-       // _createStudentProfile(context, url);
+      //  _createStudentProfile(context, url);
       }
       );
 
     } else {
-      Fluttertoast.showToast(msg: "Have you selected image");
+      Fluttertoast.showToast(msg: "Please fill all filled");
     }
   }
 
   void _createStudentProfile(context) {
-    BlocProvider.of<StudentBlocCubit>(context).createStudent(
-
-      student:StudentModel(
-        password: _passwordController.text.toString(),
-        fullName: _fullnameController.text.toString(),
-        age: int.parse(_ageController.text.toString()),
-        rollNumber: _rollNumberController.text.toString(),
-        course: _courseController.text.toString(),
-        email: _emailController.text.toString(),
-      )
-    ).then((value) {
-      Fluttertoast.showToast(msg: "Added Successfully");
-      Navigator.pop(context);
-    }).catchError((e) {
-      Fluttertoast.showToast(msg: "Error");
+    setState(() {
+      loading = true;
     });
+    if (_formKey.currentState!.validate()) {
+      BlocProvider.of<CredentialCubit>(context).signUpSubmit(
+
+          student: StudentModel(
+            password: _passwordController.text.toString(),
+            fullName: _fullnameController.text.toString(),
+            age: int.parse(_ageController.text.toString()),
+            rollNumber: _rollNumberController.text.toString(),
+            course: _courseController.text.toString(),
+            email: _emailController.text.toString(),
+            profileImageUrl: ' ',
+          )
+      ).then((value) {
+        setState(() {
+          loading = false;
+        });
+
+        Fluttertoast.showToast(msg: "Added Successfully");
+        //Navigator.pop(context);
+      }).catchError((e) {
+        setState(() {
+          loading = false;
+        });
+        Fluttertoast.showToast(msg: "Error");
+      });
+    }else {
+      Fluttertoast.showToast(msg: "Please fill all filled");
+    }
   }
 
   bool _checkValidEmail(String email) {

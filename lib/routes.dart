@@ -9,6 +9,7 @@ import 'features/represantion/dashboard_screan.dart';
 import 'features/represantion/exam/exam_page.dart';
 import 'features/represantion/parent/parent_page.dart';
 import 'features/represantion/setting/setting_page.dart';
+import 'features/represantion/student/student_page/student_deshboad_details/deshboard.dart';
 import 'features/represantion/student/student_page/student_page.dart';
 
 
@@ -31,6 +32,8 @@ class NamedRouter {
         return getPageRoute(const StudentScreen());
       case RouteList.teacher:
         return getPageRoute(const TeacherScreen());
+      case RouteList.studentDeshbBoardDetail:
+        return getPageRoute(DashboardScreen());
       default:
         return MaterialPageRoute(builder: (_) => const DashBoardScreen());
     }
@@ -48,7 +51,9 @@ PageRouteBuilder getPageRoute(Widget screen) {
         BuildContext context,
         Animation<double> animation,
         Animation<double> secondaryAnimation,
-        Widget child) {
+        Widget child
+
+        ) {
       return Align(
         /// you can also change it
         child: SizeTransition(

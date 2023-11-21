@@ -6,6 +6,7 @@ class RouteList {
   static const String attendance = 'attendance';
   static const String exams = 'exams';
   static const String settings = 'settings';
+  static const String studentDeshbBoardDetail='StudentDeshboard';
 
 // static Map<String, Widget Function(BuildContext context)> getAllRoutes() =>{
 //   dashBoard :(context)=> const DashBoardScreen(),

@@ -2,6 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:student_admin_panel/features/domain/entity/student_entites.dart';
+import 'package:student_admin_panel/features/domain/entity/subject_entites.dart';
 
 import '../../domain/entity/teacher_entities.dart';
 import '../../domain/repository/firebase_repostory.dart';
@@ -48,8 +49,15 @@ class StudentFirebaseRepositoryImpl extends StudentFirebaseRepository{
   final StudentRemoteDateSource RemoteDateSource;
 
   StudentFirebaseRepositoryImpl({required this.RemoteDateSource});
+
+  //for student
   @override
   Future<void> createStudent(StudentEntity student) async=>RemoteDateSource.createStudent(student);
+
+  //for subject
+
+  @override
+  Future<void> createSubject(SubjectEntities Subject) async=>RemoteDateSource.createSubject(Subject);
 
   @override
   Stream<List<StudentEntity>> getSingleOtherStudent(String otherUid) {
@@ -64,10 +72,7 @@ class StudentFirebaseRepositoryImpl extends StudentFirebaseRepository{
   }
 
   @override
-  Stream<List<StudentEntity>> getStudents() {
-    // TODO: implement getStudents
-    throw UnimplementedError();
-  }
+  Stream<List<StudentEntity>> getStudents() =>RemoteDateSource.getStudents();
 
   @override
   Future<void> updateStudent(StudentEntity student) {
@@ -80,5 +85,30 @@ class StudentFirebaseRepositoryImpl extends StudentFirebaseRepository{
     // TODO: implement uploadImageToStorage
     throw UnimplementedError();
   }
-  
+
+  @override
+  Future<void> forgotPassword(String email) {
+    // TODO: implement forgotPassword
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<String> getCurrentUId() async=>RemoteDateSource.getCurrentUId();
+
+  @override
+  Future<bool> isSignIn() async=>RemoteDateSource.isSignIn();
+
+  @override
+  Future<void> signIn(StudentEntity student) async=>RemoteDateSource.signIn(student);
+
+  @override
+  Future<void> signOut()async=>RemoteDateSource.signOut();
+
+  @override
+  Future<void> signUp(StudentEntity student) async=>RemoteDateSource.signUp(student);
+
+  @override
+  Stream<List<SubjectEntities>> getSubject()  =>RemoteDateSource.getSubject();
+
+
 }

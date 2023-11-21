@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:student_admin_panel/features/represantion/teacher/widget/right_teacher_sheet.dart';
+import 'package:student_admin_panel/features/represantion/teacher/widget/right_student_sheet.dart';
+
 
 import '../../../../constant/app_sized_box.dart';
 import '../../../../constant/app_text.dart';
